@@ -10,6 +10,7 @@ module OmniAuth
       option :idp_sso_target_url_runtime_params, {}
 
       def request_phase
+        logger.debug("this is here")
         options[:assertion_consumer_service_url] ||= callback_url
         runtime_request_parameters = options.delete(:idp_sso_target_url_runtime_params)
 
@@ -25,7 +26,7 @@ module OmniAuth
       end
 
       def callback_phase
-        raise request.params
+        logger.debug(request.params['SAMLResponse'])
       #  unless request.params['SAMLResponse']
       #    raise OmniAuth::Strategies::SAML::ValidationError.new("SAML response missing")
       #  end
