@@ -10,7 +10,6 @@ module OmniAuth
       option :idp_sso_target_url_runtime_params, {}
 
       def request_phase
-        raise "this is happening"
         options[:assertion_consumer_service_url] ||= callback_url
         runtime_request_parameters = options.delete(:idp_sso_target_url_runtime_params)
 
