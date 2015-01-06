@@ -25,22 +25,19 @@ module OmniAuth
       end
 
       def callback_phase
-      #  raise OmniAuth::Strategies::SAML::ValidationError.new(request.params['SAMLResponse'])
+        unless request.params['SAMLResponse']
+          raise OmniAuth::Strategies::SAML::ValidationError.new("SAML response missing")
+        end
 
         response = Onelogin::Saml::Response.new(request.params['SAMLResponse'], options)
         response.settings = Onelogin::Saml::Settings.new(options)
 
-        if response.name_id.present?
-          @name_id = response.name_id
-        elsif response.emailAddress.present?
-          @name_id = response.emailAddress
-        end
+        @name_id = response.name_id
+        @attributes = response.attributes
 
-        if response.attributes.present?
-          @attributes = response.attributes
+        if @name_id.nil? || @name_id.empty?
+          raise OmniAuth::Strategies::SAML::ValidationError.new("SAML response missing 'name_id'")
         end
-
-        @response = response
 
         response.validate!
 
